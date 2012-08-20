@@ -19,43 +19,43 @@ binmode(IN, ":encoding(utf8)");
 
 #http://spraakbanken.gu.se/eng/research/saldo/tagset
 my %tags = (
-	"ab"  => "",
-	"aba" => "",
-	"abh" => "",
-	"abm" => "",
-	"al"  => "",
-	"av"  => "",
-	"ava" => "",
-	"avh" => "",
-	"avm" => "",
-	"ie"  => "", #att: infinitive mark
-	"in"  => "",
-	"inm" => "",
-	"kn"  => "", #conjunction
-	"kna" => "",
-	"knm" => "",
+	"ab"  => "adverb",
+	"aba" => "adverb",
+	"abh" => "adverb",
+	"abm" => "adverb",
+	"al"  => "determiner",
+	"av"  => "adjective",
+	"ava" => "adjective",
+	"avh" => "adjective",
+	"avm" => "adjective",
+	"ie"  => "particle", #att: infinitive mark
+	"in"  => "interjection",
+	"inm" => "interjection",
+	"kn"  => "conjunction", #conjunction
+	"kna" => "conjunction",
+	"knm" => "conjunction",
 	"mxc" => "", #multiwords (of any category) written as a compound
-	"nl"  => "",
-	"nlm" => "",
+	"nl"  => "numeral",
+	"nlm" => "numeral",
 	"nn"  => "noun",
 	"nna" => "noun",
-	"nnh" => "", #snåret, hörning, årsåldern, åring
+	"nnh" => "noun", #snåret, hörning, årsåldern, åring
 	"nnm" => "noun", #hapax: tusen sinom tusen
-	"pm"  => "",
-	"pma" => "",
-	"pmm" => "",
-	"pn"  => "",
-	"pnm" => "",
-	"pp"  => "",
-	"ppa" => "",
-	"ppm" => "",
-	"sn"  => "",
-	"snm" => "",
+	"pm"  => "properNoun",
+	"pma" => "properNoun",
+	"pmm" => "properNoun",
+	"pn"  => "pronoun",
+	"pnm" => "pronoun",
+	"pp"  => "preposition",
+	"ppa" => "preposition",
+	"ppm" => "preposition",
+	"sn"  => "subordinatingConjunction",
+	"snm" => "subordinatingConjunction",
 	"ssm" => "",
 	"sxc" => "",
-	"vb"  => "",
-	"vba" => "",
-	"vbm" => "",
+	"vb"  => "verb",
+	"vba" => "verb",
+	"vbm" => "verb",
 );
 
 my $lexcnt = 0;
@@ -71,9 +71,9 @@ my $header =<<__END__;
 \@prefix lexinfo: <http://www.lexinfo.net/ontology/2.0/lexinfo#> .
 \@prefix lemon: <http://www.monnet-project.eu/lemon#> .
 \@prefix saldo: <http://dydra.com/kurzum/saldo#> .
-\@prefix FIXME: <file:/tmp/foo#> .
-\@prefix saldofm: <file:/tmp/bar#> .
-\@prefix saldotags: <file:/tmp/baz#> .
+\@prefix olia-system: <http://purl.org/olia/system.owl#> .
+\@prefix saldofm: <http://dydra.com/kurzum/saldofm#> .
+\@prefix saldotags: <http://dydra.com/kurzum/saldotags#> .
 
 __END__
 
@@ -115,7 +115,8 @@ while(<IN>) {
 		print OUT "<${base}lemgram-$lgramenc>\n";
 		print OUT "    a lemon:$lemtype ;\n";
 		print OUT "    lemon:pattern saldofm:$paradigm ;\n" if ($paradigm && $paradigm ne '');
-		print OUT "    FIXME:tag saldotags:$tag ;\n" if ($tag && $tag ne '');
+		print OUT "    olia-system:hasTag saldotags:$tag ;\n" if ($tag && $tag ne '');
+		print OUT "    lexinfo:partOfSpeech lexinfo:$tags{$tag} ;\n" if ($tags{$tag} && $tags{$tag} ne '');
 		print OUT "    lemon:form <${base}lemgram-$lgramenc-writtenForm> .\n";
 		print OUT "\n";
 		print OUT "<${base}lemgram-$lgramenc-writtenForm>\n";
