@@ -133,14 +133,14 @@ while(<IN>) {
 
 	if (m!<Sense id="([^"]*)" />!) {
 		$sensenc = uri_escape_utf8($1);
-		print OUT "<${base}lemgram-$sensenc>\n";
+		print OUT "<${base}sense-$sensenc>\n";
 		print OUT "    a lemon:LexicalSense .\n";
 		print OUT "\n";
 		print TMP "tmp:lexitem-$lexcnt lemon:sense <${base}sense-$sensenc> .\n";
 	}
 	if (m!<Sense id="([^"]*)">!) {
 		$sensenc = uri_escape_utf8($1);
-		print OUT "<${base}lemgram-$sensenc>\n";
+		print OUT "<${base}sense-$sensenc>\n";
 		print OUT "    a lemon:LexicalSense ;\n";
 		print OUT "\n";
 		print TMP "tmp:lexitem-$lexcnt lemon:sense <${base}sense-$sensenc> .\n";
