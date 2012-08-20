@@ -1,0 +1,10 @@
+PREFIX lemon: <http://www.monnet-project.eu/lemon#>
+
+CONSTRUCT { ?form lemon:otherForm ?form2 . }
+
+WHERE {
+    ?entry lemon:form ?form .
+    ?entry lemon:form ?form2 .
+    FILTER(?form != ?form2)
+}
+
