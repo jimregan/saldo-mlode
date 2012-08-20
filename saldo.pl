@@ -37,10 +37,10 @@ my %tags = (
 	"mxc" => "", #multiwords (of any category) written as a compound
 	"nl"  => "",
 	"nlm" => "",
-	"nn"  => "",
-	"nna" => "", #acronym?
+	"nn"  => "noun",
+	"nna" => "noun",
 	"nnh" => "", #snåret, hörning, årsåldern, åring
-	"nnm" => "", #hapax: tusen sinom tusen
+	"nnm" => "noun", #hapax: tusen sinom tusen
 	"pm"  => "",
 	"pma" => "",
 	"pmm" => "",
@@ -65,6 +65,21 @@ my $lgramenc;
 my $base = 'http://dydra.com/kurzum/saldo#';
 my $lemtype;
 my $sensenc;
+
+my $header =<<__END__;
+\@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+\@prefix lexinfo: <http://www.lexinfo.net/ontology/2.0/lexinfo#> .
+\@prefix lemon: <http://www.monnet-project.eu/lemon#> .
+\@prefix saldo: <http://dydra.com/kurzum/saldo#> .
+\@prefix FIXME: <file:/tmp/foo#> .
+\@prefix saldofm: <file:/tmp/bar#> .
+\@prefix saldotags: <file:/tmp/baz#> .
+
+__END__
+
+print TMP "\@prefix tmp: <file:/tmp/saldo/tmp.ttl#> .\n";
+print OUT $header;
+print TMP $header;
 
 while(<IN>) {
 	if (m!<feat att="([^"]*)" val="([^"]*)" />!) {
@@ -107,27 +122,27 @@ while(<IN>) {
 		print OUT "    lemon:writtenRep \"$lexeme\"\@sv .\n";
 		print OUT "\n";
 		# This isn't right, it's an intermediate file to get the right links
-		print TMP ":lexitem-$lexcnt lemon:form <${base}lemgram-$lgramenc>\n";
+		print TMP "tmp:lexitem-$lexcnt lemon:form <${base}lemgram-$lgramenc> .\n";
 	}
 
 	if (m/<LexicalEntry>/) {
 		$lexcnt++;
-		print TMP ":lexitem-$lexcnt\n    a lemon:LexicalEntry .\n\n";
+		print TMP "tmp:lexitem-$lexcnt\n    a lemon:LexicalEntry .\n\n";
 	}
 
 	if (m!<Sense id="([^"]*)" />!) {
 		$sensenc = uri_escape_utf8($1);
-		print OUT "<${base}lemgram-$lgramenc>\n";
+		print OUT "<${base}lemgram-$sensenc>\n";
 		print OUT "    a lemon:LexicalSense .\n";
 		print OUT "\n";
-		print TMP ":lexitem-$lexcnt lemon:sense <${base}sense-$sensenc>\n";
+		print TMP "tmp:lexitem-$lexcnt lemon:sense <${base}sense-$sensenc> .\n";
 	}
 	if (m!<Sense id="([^"]*)">!) {
 		$sensenc = uri_escape_utf8($1);
-		print OUT "<${base}lemgram-$lgramenc>\n";
+		print OUT "<${base}lemgram-$sensenc>\n";
 		print OUT "    a lemon:LexicalSense ;\n";
 		print OUT "\n";
-		print TMP ":lexitem-$lexcnt lemon:sense <${base}sense-$sensenc>\n";
+		print TMP "tmp:lexitem-$lexcnt lemon:sense <${base}sense-$sensenc> .\n";
 	}
 	if (m!<SenseRelation targets="([^"]*)">!) {
 		my $srelenc = uri_escape_utf8($1);
@@ -135,7 +150,7 @@ while(<IN>) {
 	}
 	if (m!</Sense>!) {
 		print OUT "    .";
-		print OUT "\n";
+		print OUT "\n\n";
 
 	}
 }
