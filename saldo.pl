@@ -96,10 +96,11 @@ while(<IN>) {
 		}
 	}
 	if (m!</FormRepresentation>!) {
+		next if (!$lgramenc || $lgramenc eq '');
 		print OUT "<${base}lemgram-$lgramenc>\n";
 		print OUT "    a lemon:$lemtype ;\n";
-		print OUT "    lemon:pattern saldofm:$paradigm ;\n";
-		print OUT "    FIXME:tag saldotags:$tag ;\n";
+		print OUT "    lemon:pattern saldofm:$paradigm ;\n" if ($paradigm && $paradigm ne '');
+		print OUT "    FIXME:tag saldotags:$tag ;\n" if ($tag && $tag ne '');
 		print OUT "    lemon:form <${base}lemgram-$lgramenc-writtenForm> .\n";
 		print OUT "\n";
 		print OUT "<${base}lemgram-$lgramenc-writtenForm>\n";
